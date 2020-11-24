@@ -52,6 +52,34 @@ namespace UnityEngine.XR.ARFoundation.Samples
             }
         }
 
+        public void AnchorRaycastFromObject(GameObject source)
+        {
+            // Raycast against planes and feature points
+            const TrackableType trackableTypes =
+                TrackableType.FeaturePoint |
+                TrackableType.PlaneWithinPolygon;
+
+            Ray ray = new Ray(source.transform.position, source.transform.forward);
+            // Perform the raycast
+            if (m_RaycastManager.Raycast(ray, s_Hits, trackableTypes))
+            {
+                // Raycast hits are sorted by distance, so the first one will be the closest hit.
+                var hit = s_Hits[0];
+
+                // Create a new anchor
+                var anchor = m_AnchorManager.AddAnchor(hit.pose);
+                if (anchor)
+                {
+                    // Remember the anchor so we can remove it later.
+                    m_Anchors.Add(anchor);
+                }
+                else
+                {
+                    Logger.Log("Error creating anchor");
+                }
+            }
+        }
+
         static List<ARRaycastHit> s_Hits = new List<ARRaycastHit>();
 
         List<ARAnchor> m_Anchors;

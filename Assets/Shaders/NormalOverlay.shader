@@ -39,12 +39,16 @@ Shader "Unlit/NormalOverlay"
             {
                 float3 position : POSITION;
                 float3 normal : NORMAL;
+
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct v2f
             {
                 float4 position : SV_POSITION;
                 half3 worldNormal : TEXCOORD0;
+
+                UNITY_VERTEX_OUTPUT_STEREO
             };
 
             struct fragment_output
@@ -56,6 +60,11 @@ Shader "Unlit/NormalOverlay"
             v2f vert (appdata v)
             {
                 v2f o;
+
+                UNITY_SETUP_INSTANCE_ID(v); //Insert
+                UNITY_INITIALIZE_OUTPUT(v2f, o); //Insert
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o); //Insert
+
                 o.position = UnityObjectToClipPos(v.position);
                 o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 return o;
